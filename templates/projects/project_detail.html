@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="kanban-board-header" style="margin-bottom: 2rem;">
+    <div>
+        <h2 style="font-size: 1.8rem; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main);">
+            {{ project.name }}
+            <span class="badge" style="background: rgba(0,0,0,0.06); color: var(--text-muted); font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08);">
+                Rol: {{ role|title }}
+            </span>
+            {% if role == 'admin' %}
+                <a href="{% url 'project_edit' project.id %}" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Editar</a>
+                {% if project.owner == user %}
+                    <a href="{% url 'project_delete' project.id %}" class="btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Eliminar</a>
+                {% endif %}
+            {% endif %}
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">{{ project.description|default:"Sin descripción" }}</p>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem;">
+        <a href="{% url 'project_members' project.id %}" class="btn btn-secondary">👥 Miembros</a>
+        {% if role == 'admin' or role == 'manager' %}
+            <a href="{% url 'task_create' project.id %}" class="btn btn-primary">➕ Añadir Tarea</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- --- DOS COLUMNAS: DETALLE / GRÁFICO (IZQ) Y FORO DE DISCUSIÓN (DER) --- -->
+<div class="project-summary-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    <!-- Columna Izquierda: Gráfico de Avance -->
+    <div class="form-card" style="margin: 0; max-width: none; display: flex; align-items: center; justify-content: space-around; padding: 1.5rem 2rem;">
+        <div style="text-align: left;">
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Avance del Proyecto</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted);">Visualización del progreso general de las tareas</p>
+        </div>
+        <div style="width: 150px; height: 150px; position: relative;">
+            <canvas id="progressChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Columna Derecha: Muro de Mensajes -->
+    <div class="form-card" style="margin: 0; max-width: none; display: flex; flex-direction: column; height: 215px; padding: 1.25rem 1.5rem;">
+        <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 0.35rem; color: var(--text-main);">💬 Muro del Proyecto</h3>
+        
+        <!-- Lista de Mensajes con Scrollbar -->
+        <div style="flex: 1; overflow-y: auto; margin-bottom: 0.75rem; padding-right: 0.35rem;" class="custom-scroll">
+            {% for msg in messages %}
+                <div style="margin-bottom: 0.65rem; font-size: 0.85rem; background: rgba(0,0,0,0.02); padding: 0.45rem 0.65rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.04);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
+                        <strong style="color: var(--primary-color);">{{ msg.sender.username }}</strong>
+                        <span style="color: var(--text-muted); font-size: 0.75rem;">{{ msg.sent_at|date:"H:i - d M" }}</span>
+                    </div>
+                    <p style="color: var(--text-main); line-height: 1.35;">{{ msg.content }}</p>
+                </div>
+            {% empty %}
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.82rem; margin-top: 1.5rem;">Aún no hay mensajes. ¡Escribe el primero!</p>
+            {% endfor %}
+        </div>
+
+        {% if role != 'viewer' %}
+            <!-- Formulario de Mensaje Rápido -->
+            <form method="post" style="display: flex; gap: 0.5rem;">
+                {% csrf_token %}
+                <input type="text" name="content" class="form-control" placeholder="Escribe un mensaje..." required style="padding: 0.45rem 0.75rem; font-size: 0.88rem; border-radius: 10px;">
+                <button type="submit" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.88rem; border-radius: 10px;">Enviar</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<!-- --- TABLERO KANBAN DINÁMICO DE COLUMNAS --- -->
+<div class="kanban-container">
+    {% for column in columns %}
+        <div class="kanban-column" data-column-id="{{ column.id }}">
+            <div class="kanban-column-header" style="margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0,0,0,0.06); text-align: center;">
+                <span class="kanban-column-title" style="font-size: 1rem; font-weight: 700; color: var(--text-main); display: block; text-align: center;">
+                    {{ column.name }}
+                </span>
+            </div>
+            
+            <div class="kanban-tasks-list" data-column-id="{{ column.id }}">
+                {% for task in column.tasks.all %}
+                    {% include 'projects/task_card_include.html' %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/drag_drop.js' %}"></script>
+<script>
+    // Recupera y parsea los contadores dinámicos de tareas del backend
+    const rawData = JSON.parse('{{ chart_data_json|safe }}');
+    const totalTasks = rawData.total;
+
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    
+    // Mapeo de colores específico solicitado:
+    // Por Hacer -> Rojo (#ef4444), En Progreso -> Amarillo (#f59e0b), Completado -> Verde (#10b981)
+    const colorMap = {
+        'Por Hacer': '#ef4444',
+        'En Progreso': '#f59e0b',
+        'Completado': '#10b981'
+    };
+    const backgroundColors = rawData.labels.map(label => colorMap[label] || '#cbd5e1');
+
+    // Si no hay tareas en ningún lado, mostramos un gráfico gris vacío
+    const datasets = totalTasks === 0 ? [{
+        data: [1],
+        backgroundColor: ['rgba(0, 0, 0, 0.08)'],
+        borderWidth: 0
+    }] : [{
+        data: rawData.counts,
+        backgroundColor: backgroundColors,
+        borderWidth: 0
+    }];
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: totalTasks === 0 ? ['Sin tareas'] : rawData.labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: totalTasks !== 0
+                }
+            },
+            cutout: '72%'
+        }
+    });
+</script>
+{% endblock %}

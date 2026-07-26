@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-card">
+    <h2 class="form-title" style="text-align: center;">Bienvenido</h2>
+    <p class="form-subtitle" style="text-align: center;">Ingresa a tu cuenta</p>
+
+    {% if form.errors %}
+        <div class="alert alert-danger" style="margin-bottom: 1.5rem; text-align: center; font-size: 0.88rem; color: #d93838; font-weight: 600; background: #fde8e8; border: 1px solid #fbd5d5; padding: 0.75rem; border-radius: 8px;">
+            Por favor, introduzca un nombre de usuario y clave correctos.
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <small style="color: #d93838; display: block; margin-top: 0.35rem; font-weight: 600;">{{ field.errors.0 }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Entrar</button>
+    </form>
+
+    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.88rem; color: var(--text-muted);">
+        ¿No tienes cuenta? <a href="{% url 'register' %}" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Regístrate aquí</a>
+    </p>
+</div>
+{% endblock %}

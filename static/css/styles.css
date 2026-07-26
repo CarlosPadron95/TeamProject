@@ -1,0 +1,507 @@
+:root {
+    /* Variables globales: Aquí guardamos colores, bordes y sombras.
+       Si en el futuro queremos cambiar el color primario, solo lo editamos aquí
+       y se aplicará de forma automática en toda la web. */
+    --bg-gradient: linear-gradient(135deg, #f5f7fb 0%, #e8ecf4 50%, #dfede9 100%);
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary-color: #f1f5f9;
+    --secondary-hover: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --card-bg: #ffffff;
+    --card-border: 1px solid rgba(0, 0, 0, 0.06);
+    --border-radius: 16px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 10px 20px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* --- RESET & BODY --- */
+/* Quitamos los márgenes y rellenos por defecto que ponen los navegadores
+   para que no afecten a nuestra maquetación personalizada. */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5;
+}
+
+/* --- NAV BAR (CABECERA DE NAVEGACIÓN) --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    /* backdrop-filter le da ese efecto translúcido borroso muy moderno estilo cristal */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Dividimos el menú en tres columnas idénticas con flex: 1 1 0%
+   Esto es muy importante para asegurar que el título 'TeamProject' en el centro
+   quede perfectamente centrado y alineado en cualquier pantalla. */
+.navbar-left {
+    flex: 1 1 0%;
+    min-width: 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.navbar-center {
+    flex: 1 1 0%;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.navbar-right {
+    flex: 1 1 0%;
+    min-width: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Título de la marca en la cabecera, con letra grande, negrita y sin icono */
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    text-decoration: none;
+    letter-spacing: -0.03em;
+    transition: var(--transition);
+}
+
+.navbar-brand:hover {
+    color: var(--primary-hover);
+}
+
+.navbar-nav {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* --- CONTAINER --- */
+.main-container {
+    flex: 1;
+    padding: 2.5rem 2rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* --- BOARDS GRID (PROJECTS LIST) --- */
+.boards-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.boards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.board-card {
+    background: var(--card-bg);
+    border: var(--card-border);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.board-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(79, 70, 229, 0.2);
+}
+
+.board-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+
+.board-card-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.45;
+}
+
+.board-card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 0.75rem;
+}
+
+/* --- FORM CARDS --- */
+.form-card {
+    background: var(--card-bg);
+    border: var(--card-border);
+    border-radius: var(--border-radius);
+    padding: 2.2rem;
+    max-width: 480px;
+    width: 100%;
+    margin: 2rem auto;
+    box-shadow: var(--shadow-md);
+}
+
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+
+.form-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+    color: var(--text-main);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* Listado de Checkboxes de miembros asignados */
+.form-group ul {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem;
+    border-radius: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.form-group li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.form-group li input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+select.form-control option {
+    background-color: #ffffff;
+    color: var(--text-main);
+}
+
+/* --- BUTTONS --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 1.15rem;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-main);
+    border: 1px solid #cbd5e1;
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-hover);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.btn-cancel {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid #cbd5e1;
+}
+
+.btn-cancel:hover {
+    background: #f1f5f9;
+    color: var(--text-main);
+}
+
+/* --- KANBAN BOARD (TABLERO DE COLUMNAS) --- */
+/* Contenedor que agrupa las tres columnas Kanban. Las centra horizontalmente en la página. */
+.kanban-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    align-items: start;
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+}
+
+/* Columna individual del Kanban. Hemos ensanchado su tamaño a 320px */
+.kanban-column {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    min-width: 320px;
+    width: 320px;
+    flex-shrink: 0;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+}
+
+.kanban-column-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+/* Títulos de las columnas, centrados con text-align: center */
+.kanban-column-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+/* Lista vertical que contiene las tarjetas de tarea dentro de cada columna */
+.kanban-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+    min-height: 100px;
+    transition: var(--transition);
+}
+
+/* Clase que se activa mediante Javascript al arrastrar una tarjeta sobre la columna */
+.kanban-tasks-list.drag-over {
+    background: rgba(79, 70, 229, 0.05);
+    border-radius: 8px;
+}
+
+.task-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(79, 70, 229, 0.25);
+}
+
+.task-card-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.task-card-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    line-height: 1.45;
+}
+
+/* --- BADGES & ALERTS --- */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+/* --- PASSWORD FIELD WRAPPER --- */
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-input-group input {
+    padding-right: 2.75rem;
+}
+
+.toggle-password-btn {
+    position: absolute;
+    right: 0.85rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition: var(--transition);
+}
+
+.toggle-password-btn:hover {
+    color: var(--primary-color);
+}
+
+/* --- SCROLLBAR --- */
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* --- FOOTER --- */
+.app-footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    margin-top: auto;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 1024px) {
+    .kanban-container {
+        padding-bottom: 1rem;
+    }
+}
+
+@media (max-width: 680px) {
+    .navbar {
+        flex-direction: column;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+    .navbar-nav {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+    .main-container {
+        padding: 1.5rem 1rem;
+    }
+    .project-summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

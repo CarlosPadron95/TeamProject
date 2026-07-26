@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-card" style="text-align: center;">
+    <h2 class="form-title" style="color: #eb5a46;">⚠️ Confirmar Eliminación</h2>
+    <p style="margin-bottom: 1.5rem; color: #ffffff; font-size: 1rem;">
+        ¿Estás seguro de que deseas eliminar el proyecto <strong>"{{ project.name }}"</strong>? Esta acción no se puede deshacer y borrará todas sus tareas y mensajes.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; gap: 0.75rem; justify-content: center;">
+            <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+            <a href="{% url 'project_detail' project.id %}" class="btn btn-cancel">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
