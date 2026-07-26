@@ -2,57 +2,67 @@
 {% load static %}
 
 {% block content %}
-<div class="kanban-board-header" style="margin-bottom: 2rem;">
-    <div>
-        <h2 style="font-size: 1.8rem; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main);">
-            {{ project.name }}
-            <span class="badge" style="background: rgba(0,0,0,0.06); color: var(--text-muted); font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08);">
-                Rol: {{ role|title }}
-            </span>
-            {% if role == 'admin' %}
-                <a href="{% url 'project_edit' project.id %}" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Editar</a>
-                {% if project.owner == user %}
-                    <a href="{% url 'project_delete' project.id %}" class="btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Eliminar</a>
+<!-- --- DOS COLUMNAS: DETALLE/GRÁFICO (IZQ) Y FORO DE DISCUSIÓN (DER) --- -->
+<div class="project-summary-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem; align-items: stretch;">
+    
+    <!-- Columna Izquierda: Contiene el Header del Proyecto y el Gráfico de Avance -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem; height: 100%;">
+        <!-- Header del tablero (Nombre, rol, botones de acción) -->
+        <div class="kanban-board-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0;">
+            <div>
+                <h2 style="font-size: 1.8rem; display: flex; align-items: center; gap: 0.75rem; color: var(--text-main); margin-top: 0;">
+                    {{ project.name }}
+                    <span class="badge" style="background: rgba(0,0,0,0.06); color: var(--text-muted); font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); font-weight: 600;">
+                        Rol: {{ role|title }}
+                    </span>
+                    {% if role == 'admin' %}
+                        <a href="{% url 'project_edit' project.id %}" class="btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Editar</a>
+                        {% if project.owner == user %}
+                            <a href="{% url 'project_delete' project.id %}" class="btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">Eliminar</a>
+                        {% endif %}
+                    {% endif %}
+                </h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0;">{{ project.description|default:"Sin descripción" }}</p>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; flex-shrink: 0;">
+                <a href="{% url 'project_members' project.id %}" class="btn btn-secondary">👥 Miembros</a>
+                {% if role == 'admin' or role == 'manager' %}
+                    <a href="{% url 'task_create' project.id %}" class="btn btn-primary">➕ Añadir Tarea</a>
                 {% endif %}
-            {% endif %}
-        </h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">{{ project.description|default:"Sin descripción" }}</p>
-    </div>
-
-    <div style="display: flex; gap: 0.75rem;">
-        <a href="{% url 'project_members' project.id %}" class="btn btn-secondary">👥 Miembros</a>
-        {% if role == 'admin' or role == 'manager' %}
-            <a href="{% url 'task_create' project.id %}" class="btn btn-primary">➕ Añadir Tarea</a>
-        {% endif %}
-    </div>
-</div>
-
-<!-- --- DOS COLUMNAS: DETALLE / GRÁFICO (IZQ) Y FORO DE DISCUSIÓN (DER) --- -->
-<div class="project-summary-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-    <!-- Columna Izquierda: Gráfico de Avance -->
-    <div class="form-card" style="margin: 0; max-width: none; display: flex; align-items: center; justify-content: space-around; padding: 1.5rem 2rem;">
-        <div style="text-align: left;">
-            <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Avance del Proyecto</h3>
-            <p style="font-size: 0.88rem; color: var(--text-muted);">Visualización del progreso general de las tareas</p>
+            </div>
         </div>
-        <div style="width: 150px; height: 150px; position: relative;">
-            <canvas id="progressChart"></canvas>
+
+        <!-- Gráfico de Avance -->
+        <div class="form-card" style="margin: 0; max-width: none; display: flex; align-items: center; justify-content: space-around; padding: 1.5rem 2rem; flex: 1;">
+            <div style="text-align: left;">
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Avance del Proyecto</h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0;">Visualización del progreso general de las tareas</p>
+            </div>
+            <div style="width: 150px; height: 150px; position: relative;">
+                <canvas id="progressChart"></canvas>
+            </div>
         </div>
     </div>
 
-    <!-- Columna Derecha: Muro de Mensajes -->
-    <div class="form-card" style="margin: 0; max-width: none; display: flex; flex-direction: column; height: 215px; padding: 1.25rem 1.5rem;">
-        <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem; font-weight: 700; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 0.35rem; color: var(--text-main);">💬 Muro del Proyecto</h3>
+    <!-- Columna Derecha: Muro de Mensajes (Chat) -->
+    <!-- Estirado con height: 100% para ocupar toda la altura al nivel del nombre del proyecto en escritorio -->
+    <div id="project-chat-container" class="form-card project-chat-card" style="margin: 0; max-width: none; display: flex; flex-direction: column; height: 100%; padding: 1.25rem 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 0.5rem;">
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-main);">💬 Muro del Proyecto</h3>
+            <!-- Botón de cerrar chat, visible solo en overlay móvil -->
+            <button id="close-mobile-chat" class="close-chat-btn" style="display: none;">✕</button>
+        </div>
         
         <!-- Lista de Mensajes con Scrollbar -->
-        <div style="flex: 1; overflow-y: auto; margin-bottom: 0.75rem; padding-right: 0.35rem;" class="custom-scroll">
+        <div id="project-chat-list" style="flex: 1; overflow-y: auto; margin-bottom: 0.75rem; padding-right: 0.35rem;" class="custom-scroll">
             {% for msg in messages %}
                 <div style="margin-bottom: 0.65rem; font-size: 0.85rem; background: rgba(0,0,0,0.02); padding: 0.45rem 0.65rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.04);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
                         <strong style="color: var(--primary-color);">{{ msg.sender.username }}</strong>
                         <span style="color: var(--text-muted); font-size: 0.75rem;">{{ msg.sent_at|date:"H:i - d M" }}</span>
                     </div>
-                    <p style="color: var(--text-main); line-height: 1.35;">{{ msg.content }}</p>
+                    <p style="color: var(--text-main); line-height: 1.35; margin: 0;">{{ msg.content }}</p>
                 </div>
             {% empty %}
                 <p style="text-align: center; color: var(--text-muted); font-size: 0.82rem; margin-top: 1.5rem;">Aún no hay mensajes. ¡Escribe el primero!</p>
@@ -61,13 +71,27 @@
 
         {% if role != 'viewer' %}
             <!-- Formulario de Mensaje Rápido -->
-            <form method="post" style="display: flex; gap: 0.5rem;">
+            <form method="post" style="display: flex; gap: 0.5rem; margin-top: auto;">
                 {% csrf_token %}
-                <input type="text" name="content" class="form-control" placeholder="Escribe un mensaje..." required style="padding: 0.45rem 0.75rem; font-size: 0.88rem; border-radius: 10px;">
-                <button type="submit" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.88rem; border-radius: 10px;">Enviar</button>
+                <input type="text" name="content" class="form-control" placeholder="Escribe un mensaje..." required style="padding: 0.45rem 0.75rem; font-size: 0.88rem; border-radius: 10px; flex: 1;">
+                <button type="submit" class="btn btn-primary" style="padding: 0.45rem 1rem; font-size: 0.88rem; border-radius: 10px; flex-shrink: 0;">Enviar</button>
             </form>
         {% endif %}
     </div>
+</div>
+
+<!-- --- BOTÓN FLOTANTE PARA EL CHAT EN MÓVIL --- -->
+<button id="mobile-chat-toggle" class="mobile-chat-badge">
+    💬 Muro del Proyecto
+</button>
+
+<!-- --- SELECTOR DE COLUMNAS PARA DISPOSITIVOS MÓVILES --- -->
+<div class="mobile-kanban-tabs">
+    {% for column in columns %}
+        <button class="mobile-tab-btn {% if forloop.first %}active{% endif %}" data-column-id="{{ column.id }}">
+            {{ column.name }}
+        </button>
+    {% endfor %}
 </div>
 
 <!-- --- TABLERO KANBAN DINÁMICO DE COLUMNAS --- -->
@@ -138,6 +162,64 @@
                 }
             },
             cutout: '72%'
+        }
+    });
+
+    // --- LÓGICA DE JAVASCRIPT AÑADIDA PARA CHAT Y TABS ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Auto-scroll del chat abajo del todo
+        const chatList = document.getElementById('project-chat-list');
+        if (chatList) {
+            chatList.scrollTop = chatList.scrollHeight;
+        }
+
+        // 2. Control de pestañas (Tabs) en la versión móvil
+        const tabBtns = document.querySelectorAll('.mobile-tab-btn');
+        const columns = document.querySelectorAll('.kanban-column');
+
+        // Establecer la primera columna activa en móvil al cargar
+        if (columns.length > 0) {
+            columns[0].classList.add('active-mobile-col');
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-column-id');
+                
+                // Toggle clase activa en los botones de pestañas
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Mostrar únicamente la columna seleccionada
+                columns.forEach(col => {
+                    if (col.getAttribute('data-column-id') === targetId) {
+                        col.classList.add('active-mobile-col');
+                    } else {
+                        col.classList.remove('active-mobile-col');
+                    }
+                });
+            });
+        });
+
+        // 3. Control de apertura/cierre de chat flotante en móvil
+        const mobileChatToggle = document.getElementById('mobile-chat-toggle');
+        const closeMobileChat = document.getElementById('close-mobile-chat');
+        const chatContainer = document.getElementById('project-chat-container');
+
+        if (mobileChatToggle && chatContainer) {
+            mobileChatToggle.addEventListener('click', () => {
+                chatContainer.classList.add('mobile-open');
+                // Al abrir, forzar scroll abajo
+                if (chatList) {
+                    chatList.scrollTop = chatList.scrollHeight;
+                }
+            });
+        }
+
+        if (closeMobileChat && chatContainer) {
+            closeMobileChat.addEventListener('click', () => {
+                chatContainer.classList.remove('mobile-open');
+            });
         }
     });
 </script>

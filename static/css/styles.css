@@ -505,3 +505,126 @@ select.form-control option {
         grid-template-columns: 1fr !important;
     }
 }
+
+/* --- MOBILE LAYOUT & CHAT ELEMENTS (Desktop Defaults) --- */
+.mobile-kanban-tabs {
+    display: none;
+}
+.mobile-chat-badge {
+    display: none;
+}
+.close-chat-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* Mostrar pestañas de columnas en móvil */
+    .mobile-kanban-tabs {
+        display: flex;
+        background: rgba(0, 0, 0, 0.04);
+        padding: 0.25rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .mobile-tab-btn {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 0.6rem 0.5rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        border-radius: 10px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    .mobile-tab-btn.active {
+        background: var(--card-bg);
+        color: var(--primary-color);
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Ocultar todas las columnas Kanban excepto la que esté activa en móvil */
+    .kanban-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .kanban-column {
+        display: none !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        margin: 0 !important;
+    }
+    .kanban-column.active-mobile-col {
+        display: flex !important;
+    }
+
+    /* Mostrar botón flotante del chat en móvil */
+    .mobile-chat-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.25rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+        z-index: 999;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    .mobile-chat-badge:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+    /* Muro del Proyecto como overlay a pantalla completa en móvil */
+    .project-chat-card {
+        display: none !important;
+    }
+    .project-chat-card.mobile-open {
+        display: flex !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        z-index: 1000;
+        margin: 0 !important;
+        border-radius: 0;
+        padding: 1.5rem;
+        background: var(--card-bg);
+    }
+    
+    .project-chat-card.mobile-open #project-chat-list {
+        flex: 1;
+        height: calc(100vh - 180px) !important;
+    }
+
+    .close-chat-btn {
+        display: flex !important;
+        background: rgba(0, 0, 0, 0.05);
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        font-size: 1rem;
+        cursor: pointer;
+        color: var(--text-main);
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+    .close-chat-btn:hover {
+        background: rgba(0, 0, 0, 0.1);
+    }
+}
+
