@@ -9,11 +9,8 @@
 
 ---
 
-## 🌐 Local Demo
-
-| | URL |
-|---|---|
-| 🖥️ **Servidor Local** | [http://127.0.0.1:8000](http://127.0.0.1:8000) |
+### 🌐 Demo en Vivo
+🔗 [Ver aplicación desplegada](https://teamproject-t4ob.onrender.com)
 
 ---
 
