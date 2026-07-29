@@ -10,16 +10,29 @@
 
 <div class="boards-grid">
     {% for project in projects %}
-        <a href="{% url 'project_detail' project.id %}" class="board-card">
+        <div class="board-card" style="position: relative; display: flex; flex-direction: column; justify-content: space-between;">
             <div>
-                <div class="board-card-title">{{ project.name }}</div>
-                <div class="board-card-desc">{{ project.description|default:"Sin descripción" }}</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.4rem;">
+                    <a href="{% url 'project_detail' project.id %}" style="text-decoration: none; color: inherit; flex: 1;">
+                        <div class="board-card-title" style="margin-bottom: 0;">{{ project.name }}</div>
+                    </a>
+                    {% if project.owner == user %}
+                        <a href="{% url 'project_delete' project.id %}" class="btn btn-danger" style="padding: 0.2rem 0.55rem; font-size: 0.75rem; border-radius: 6px; flex-shrink: 0;" title="Eliminar proyecto">
+                            Eliminar
+                        </a>
+                    {% endif %}
+                </div>
+                <a href="{% url 'project_detail' project.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="board-card-desc">{{ project.description|default:"Sin descripción" }}</div>
+                </a>
             </div>
-            <div class="board-card-footer">
-                <span>👑 {{ project.owner.username }}</span>
-                <span>📅 {{ project.created_at|date:"d M Y" }}</span>
-            </div>
-        </a>
+            <a href="{% url 'project_detail' project.id %}" style="text-decoration: none; color: inherit;">
+                <div class="board-card-footer">
+                    <span>👑 {{ project.owner.username }}</span>
+                    <span>📅 {{ project.created_at|date:"d M Y" }}</span>
+                </div>
+            </a>
+        </div>
     {% empty %}
         <div class="empty-projects-card" style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 2rem; background: #ffffff; border-radius: 16px; border: 1px solid rgba(0, 0, 0, 0.06); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); max-width: 520px; margin: 1.5rem auto;">
             <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
