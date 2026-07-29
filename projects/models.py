@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # --- 1. MODELO DE PROYECTO ---
-# Este modelo representa un proyecto en nuestra base de datos.
+# Este modelo representa un proyecto en la base de datos.
 # Cada proyecto tiene un creador (dueño), un nombre, una descripción opcional y una fecha de creación.
 class Project(models.Model):
     # Nombre del proyecto (máximo 150 caracteres)
@@ -18,10 +18,10 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
 
     class Meta:
-        # Hacemos que los proyectos se ordenen automáticamente del más nuevo al más viejo
+        # Configuro que los proyectos se ordenen automáticamente del más nuevo al más viejo
         ordering = ['-created_at']
 
-    # Devuelve el nombre del proyecto cuando imprimimos el objeto (útil para el panel de administración de Django)
+    # Devuelve el nombre del proyecto cuando se imprime el objeto (útil para el panel de administración de Django)
     def __str__(self):
         return self.name
 
@@ -51,7 +51,7 @@ class Column(models.Model):
 # --- 3. MODELO DE MIEMBRO Y ROL ---
 # Vincula un usuario con un proyecto y le asigna un rol de permisos (admin, manager, developer, viewer).
 class ProjectMember(models.Model):
-    # Definimos la lista de roles disponibles y sus etiquetas legibles
+    # Defino la lista de roles disponibles y sus etiquetas legibles
     ROLE_CHOICES = [
         ('admin', 'Administrador'),
         ('manager', 'Gestor de Proyecto'),
@@ -112,7 +112,7 @@ class Task(models.Model):
     position = models.IntegerField(default=0, verbose_name="Posición")
 
     class Meta:
-        # Ordenamos las tareas por su posición y luego por fecha de creación
+        # Ordeno las tareas por su posición y luego por fecha de creación
         ordering = ['position', 'created_at']
 
     # Muestra el título de la tarea al imprimir el objeto

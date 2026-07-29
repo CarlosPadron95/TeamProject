@@ -1,6 +1,6 @@
 :root {
-    /* Variables globales: Aquí guardamos colores, bordes y sombras.
-       Si en el futuro queremos cambiar el color primario, solo lo editamos aquí
+    /* Variables globales: Aquí guardo colores, bordes y sombras.
+       Si en el futuro quiero cambiar el color primario, solo lo edito aquí
        y se aplicará de forma automática en toda la web. */
     --bg-gradient: linear-gradient(135deg, #f5f7fb 0%, #e8ecf4 50%, #dfede9 100%);
     --primary-color: #4f46e5;
@@ -19,8 +19,8 @@
 }
 
 /* --- RESET & BODY --- */
-/* Quitamos los márgenes y rellenos por defecto que ponen los navegadores
-   para que no afecten a nuestra maquetación personalizada. */
+/* Elimino los márgenes y rellenos por defecto que ponen los navegadores
+   para que no afecten a la maquetación personalizada. */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -51,7 +51,7 @@ body {
     box-shadow: var(--shadow-sm);
 }
 
-/* Dividimos el menú en tres columnas idénticas con flex: 1 1 0%
+/* Divido el menú en tres columnas idénticas con flex: 1 1 0%
    Esto es muy importante para asegurar que el título 'TeamProject' en el centro
    quede perfectamente centrado y alineado en cualquier pantalla. */
 .navbar-left {
@@ -348,7 +348,7 @@ select.form-control option {
     padding-bottom: 1.5rem;
 }
 
-/* Columna individual del Kanban. Hemos ensanchado su tamaño a 320px */
+/* Columna individual del Kanban. Ancho ajustado a 320px */
 .kanban-column {
     background: #f1f5f9;
     border: 1px solid #e2e8f0;

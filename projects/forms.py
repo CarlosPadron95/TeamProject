@@ -9,7 +9,7 @@ from .models import Project, ProjectMember, Task, ProjectMessage, Column
 class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Recorremos todos los campos y les agregamos la clase de Bootstrap/CSS 'form-control'
+        # Recorro todos los campos y les agrego la clase de CSS 'form-control'
         # para que se vean redondeados, con bordes suaves y elegantes.
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
@@ -18,7 +18,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 # --- 2. FORMULARIO DE REGISTRO DE USUARIOS ---
 # Permite crear una nueva cuenta en la base de datos de la aplicación.
 class CustomUserCreationForm(UserCreationForm):
-    # Hacemos obligatorio el campo del correo electrónico
+    # Hago obligatorio el campo del correo electrónico
     email = forms.EmailField(required=True, label="Correo Electrónico")
 
     class Meta:
@@ -27,9 +27,9 @@ class CustomUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Cambiamos la etiqueta por defecto de Django a español amigable
+        # Cambio la etiqueta por defecto de Django a español amigable
         self.fields['username'].label = "Nombre de Usuario"
-        # Limpiamos los textos de ayuda automáticos de Django (los de 'su contraseña no puede ser...')
+        # Limpio los textos de ayuda automáticos de Django (los de 'su contraseña no puede ser...')
         # para que no ensucien el diseño visual de la pantalla.
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
@@ -39,10 +39,10 @@ class CustomUserCreationForm(UserCreationForm):
     def clean_password1(self):
         password = self.cleaned_data.get('password1')
         if password:
-            # Comprobamos la longitud mínima de la clave (mínimo 8 caracteres)
+            # Compruebo la longitud mínima de la clave (mínimo 8 caracteres)
             if len(password) < 8:
                 raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
-            # Comprobamos con una expresión regular que contenga al menos un número
+            # Compruebo con una expresión regular que contenga al menos un número
             if not re.search(r'\d', password):
                 raise forms.ValidationError("La contraseña debe contener al menos un número.")
         return password
@@ -53,9 +53,9 @@ class CustomUserCreationForm(UserCreationForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        # Solo necesitamos que el usuario ingrese el nombre y la descripción
+        # Solo solicito que el usuario ingrese el nombre y la descripción
         fields = ['name', 'description']
-        # Definimos widgets personalizados con clases CSS y placeholders sugerentes
+        # Defino widgets personalizados con clases CSS y placeholders sugerentes
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. App de Reservas'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Descripción del proyecto...'}),
@@ -80,17 +80,17 @@ class TaskForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Detalles de la tarea...'}),
             'column': forms.Select(attrs={'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
-            # Usamos múltiples checkboxes para que el administrador pueda asignar la tarea a varios usuarios a la vez
+            # Uso múltiples checkboxes para que el administrador pueda asignar la tarea a varios usuarios a la vez
             'assigned_to': forms.CheckboxSelectMultiple(),
         }
 
-    # Sobrescribimos el constructor para filtrar los datos dinámicamente según el proyecto actual
+    # Sobrescribo el constructor para filtrar los datos dinámicamente según el proyecto actual
     def __init__(self, *args, project=None, **kwargs):
         super().__init__(*args, **kwargs)
         if project:
-            # 1. Filtramos las columnas: Solo mostramos las que pertenecen a este proyecto específico
+            # 1. Filtro las columnas: Solo muestro las que pertenecen a este proyecto específico
             self.fields['column'].queryset = Column.objects.filter(project=project)
-            # 2. Filtramos asignados: Solo se puede asignar a usuarios que sean miembros activos (excluyendo observadores) o al dueño (owner)
+            # 2. Filtro asignados: Solo se puede asignar a usuarios que sean miembros activos (excluyendo observadores) o al dueño (owner)
             member_ids = list(project.memberships.exclude(role='viewer').values_list('user_id', flat=True))
             valid_user_ids = [project.owner.id] + member_ids
             self.fields['assigned_to'].queryset = User.objects.filter(id__in=valid_user_ids)
@@ -106,26 +106,26 @@ class ProjectMemberForm(forms.ModelForm):
 
     class Meta:
         model = ProjectMember
-        # Solo seleccionamos el rol inicial que tendrá el invitado (ej. Desarrollador)
+        # Solo selecciono el rol inicial que tendrá el invitado (ej. Desarrollador)
         fields = ['role']
         widgets = {
             'role': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    # Sobrescribimos el constructor para recibir el objeto proyecto
+    # Sobrescribo el constructor para recibir el objeto proyecto
     def __init__(self, *args, project=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.project = project
 
-    # Comprobamos que el nombre de usuario escrito de verdad exista registrado en la base de datos
-    # y validamos que no sea el propietario ni un miembro actual
+    # Compruebo que el nombre de usuario escrito de verdad exista registrado en la base de datos
+    # y valido que no sea el propietario ni un miembro actual
     def clean_username(self):
         username = self.cleaned_data.get('username')
         try:
-            # Intentamos buscar el usuario en la tabla de Django
+            # Intento buscar el usuario en la tabla de Django
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            # Si no existe, lanzamos un error que se mostrará en pantalla debajo del campo
+            # Si no existe, lanzo un error que se mostrará en pantalla debajo del campo
             raise forms.ValidationError("El usuario no existe en el sistema.")
         
         if self.project:

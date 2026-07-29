@@ -7,7 +7,7 @@ urlpatterns = [
     # Registro de nuevos usuarios
     path('register/', views.register_view, name='register'),
     
-    # Login personalizado (le inyectamos nuestro formulario estilizado CustomAuthenticationForm)
+    # Login personalizado (inyecto el formulario estilizado CustomAuthenticationForm)
     path('login/', auth_views.LoginView.as_view(
         template_name='auth/login.html',
         authentication_form=forms.CustomAuthenticationForm

@@ -17,7 +17,7 @@
 <body>
     <!-- --- NAVEGACIÓN --- -->
     <nav class="navbar">
-        <!-- Columna Izquierda: Mis Proyectos solo si no estamos en la página de Mis Proyectos -->
+        <!-- Columna Izquierda: Mis Proyectos solo si no me encuentro en la página de Mis Proyectos -->
         <div class="navbar-left">
             {% if user.is_authenticated and request.resolver_match.url_name != 'project_list' %}
                 <a href="{% url 'project_list' %}" class="nav-link">Mis Proyectos</a>

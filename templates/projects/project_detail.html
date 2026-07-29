@@ -133,7 +133,7 @@
     };
     const backgroundColors = rawData.labels.map(label => colorMap[label] || '#cbd5e1');
 
-    // Si no hay tareas en ningún lado, mostramos un gráfico gris vacío
+    // Si no hay tareas en ningún lado, muestro un gráfico gris vacío
     const datasets = totalTasks === 0 ? [{
         data: [1],
         backgroundColor: ['rgba(0, 0, 0, 0.08)'],
