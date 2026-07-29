@@ -12,21 +12,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Estilos CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=1.5">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=1.6">
 </head>
 <body>
     <!-- --- NAVEGACIÓN --- -->
     <nav class="navbar">
-        <!-- Columna Izquierda: Mis Proyectos si está autenticado -->
+        <!-- Columna Izquierda: Mis Proyectos solo si no estamos en la página de Mis Proyectos -->
         <div class="navbar-left">
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and request.resolver_match.url_name != 'project_list' %}
                 <a href="{% url 'project_list' %}" class="nav-link">Mis Proyectos</a>
-            {% else %}
-                &nbsp;
             {% endif %}
         </div>
 
-        <!-- Columna Central: Marca Centrada y más grande -->
+        <!-- Columna Central: Marca Centrada -->
         <div class="navbar-center">
             <a href="{% url 'project_list' %}" class="navbar-brand">
                 TeamProject
@@ -35,17 +33,17 @@
 
         <!-- Columna Derecha: Menú de Navegación / Autenticación -->
         <div class="navbar-right">
-            <ul class="navbar-nav">
-                {% if user.is_authenticated %}
-                    <li class="nav-link" style="font-weight: 600; color: var(--text-main);">👤 {{ user.username }}</li>
+            {% if user.is_authenticated %}
+                <ul class="navbar-nav">
+                    <li class="nav-link-user" style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">👤 {{ user.username }}</li>
                     <li>
                         <form action="{% url 'logout' %}" method="post" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-secondary" style="padding: 0.35rem 0.75rem;">Salir</button>
+                            <button type="submit" class="btn btn-secondary" style="padding: 0.3rem 0.65rem; font-size: 0.82rem;">Salir</button>
                         </form>
                     </li>
-                {% endif %}
-            </ul>
+                </ul>
+            {% endif %}
         </div>
     </nav>
 

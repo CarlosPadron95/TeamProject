@@ -201,24 +201,46 @@
             });
         });
 
-        // 3. Control de apertura/cierre de chat flotante en móvil
+        // 3. Control de apertura/cierre de chat flotante en móvil con persistencia
         const mobileChatToggle = document.getElementById('mobile-chat-toggle');
         const closeMobileChat = document.getElementById('close-mobile-chat');
         const chatContainer = document.getElementById('project-chat-container');
 
+        // Si se envió un mensaje desde móvil previamente, reabrir el muro automáticamente
+        if (sessionStorage.getItem('mobile_chat_open') === 'true' && window.innerWidth <= 768 && chatContainer) {
+            chatContainer.classList.add('mobile-open');
+            if (chatList) {
+                setTimeout(() => { chatList.scrollTop = chatList.scrollHeight; }, 100);
+            }
+        }
+
         if (mobileChatToggle && chatContainer) {
             mobileChatToggle.addEventListener('click', () => {
                 chatContainer.classList.add('mobile-open');
-                // Al abrir, forzar scroll abajo
+                sessionStorage.setItem('mobile_chat_open', 'true');
                 if (chatList) {
-                    chatList.scrollTop = chatList.scrollHeight;
+                    setTimeout(() => { chatList.scrollTop = chatList.scrollHeight; }, 100);
                 }
             });
         }
 
+        // Al enviar el formulario de mensaje en móvil, mantener guardada la bandera para no cerrar el chat
+        if (chatContainer) {
+            const chatForm = chatContainer.querySelector('form');
+            if (chatForm) {
+                chatForm.addEventListener('submit', () => {
+                    if (window.innerWidth <= 768) {
+                        sessionStorage.setItem('mobile_chat_open', 'true');
+                    }
+                });
+            }
+        }
+
+        // Solo al hacer clic en la "X" se cierra el muro y se elimina la persistencia
         if (closeMobileChat && chatContainer) {
             closeMobileChat.addEventListener('click', () => {
                 chatContainer.classList.remove('mobile-open');
+                sessionStorage.removeItem('mobile_chat_open');
             });
         }
     });
