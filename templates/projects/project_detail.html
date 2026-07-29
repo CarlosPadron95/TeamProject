@@ -6,7 +6,7 @@
 <div class="project-summary-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem; align-items: stretch;">
     
     <!-- Columna Izquierda: Contiene el Header del Proyecto y el Gráfico de Avance -->
-    <div style="display: flex; flex-direction: column; gap: 1.5rem; height: 100%;">
+    <div style="display: flex; flex-direction: column; gap: 1.5rem; height: 100%; min-height: 0;">
         <!-- Header del tablero (Nombre, rol, botones de acción) -->
         <div class="kanban-board-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0;">
             <div>
@@ -47,7 +47,7 @@
 
     <!-- Columna Derecha: Muro de Mensajes (Chat) -->
     <!-- Estirado con height: 100% para ocupar toda la altura al nivel del nombre del proyecto en escritorio -->
-    <div id="project-chat-container" class="form-card project-chat-card" style="margin: 0; max-width: none; display: flex; flex-direction: column; height: 100%; padding: 1.25rem 1.5rem;">
+    <div id="project-chat-container" class="form-card project-chat-card" style="margin: 0; max-width: none; display: flex; flex-direction: column; height: 100%; min-height: 0; padding: 1.25rem 1.5rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 0.5rem;">
             <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-main);">💬 Muro del Proyecto</h3>
             <!-- Botón de cerrar chat, visible solo en overlay móvil -->
@@ -55,7 +55,7 @@
         </div>
         
         <!-- Lista de Mensajes con Scrollbar -->
-        <div id="project-chat-list" style="flex: 1; overflow-y: auto; margin-bottom: 0.75rem; padding-right: 0.35rem;" class="custom-scroll">
+        <div id="project-chat-list" style="flex: 1; overflow-y: auto; min-height: 0; margin-bottom: 0.75rem; padding-right: 0.35rem;" class="custom-scroll">
             {% for msg in messages %}
                 <div style="margin-bottom: 0.65rem; font-size: 0.85rem; background: rgba(0,0,0,0.02); padding: 0.45rem 0.65rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.04);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">

@@ -479,6 +479,10 @@ select.form-control option {
     margin-top: auto;
 }
 
+.project-summary-grid {
+    height: 360px;
+}
+
 /* --- RESPONSIVENESS --- */
 @media (max-width: 1024px) {
     .kanban-container {
@@ -503,6 +507,7 @@ select.form-control option {
     }
     .project-summary-grid {
         grid-template-columns: 1fr !important;
+        height: auto !important;
     }
 }
 

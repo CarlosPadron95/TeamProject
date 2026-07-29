@@ -90,8 +90,8 @@ class TaskForm(forms.ModelForm):
         if project:
             # 1. Filtramos las columnas: Solo mostramos las que pertenecen a este proyecto específico
             self.fields['column'].queryset = Column.objects.filter(project=project)
-            # 2. Filtramos asignados: Solo se puede asignar a usuarios que sean miembros del proyecto o al dueño (owner)
-            member_ids = list(project.memberships.values_list('user_id', flat=True))
+            # 2. Filtramos asignados: Solo se puede asignar a usuarios que sean miembros activos (excluyendo observadores) o al dueño (owner)
+            member_ids = list(project.memberships.exclude(role='viewer').values_list('user_id', flat=True))
             valid_user_ids = [project.owner.id] + member_ids
             self.fields['assigned_to'].queryset = User.objects.filter(id__in=valid_user_ids)
 
@@ -112,7 +112,13 @@ class ProjectMemberForm(forms.ModelForm):
             'role': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    # Sobrescribimos el constructor para recibir el objeto proyecto
+    def __init__(self, *args, project=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.project = project
+
     # Comprobamos que el nombre de usuario escrito de verdad exista registrado en la base de datos
+    # y validamos que no sea el propietario ni un miembro actual
     def clean_username(self):
         username = self.cleaned_data.get('username')
         try:
@@ -121,5 +127,12 @@ class ProjectMemberForm(forms.ModelForm):
         except User.DoesNotExist:
             # Si no existe, lanzamos un error que se mostrará en pantalla debajo del campo
             raise forms.ValidationError("El usuario no existe en el sistema.")
+        
+        if self.project:
+            if self.project.owner == user:
+                raise forms.ValidationError("No puedes invitar al propietario del proyecto, ya es miembro administrador.")
+            if ProjectMember.objects.filter(project=self.project, user=user).exists():
+                raise forms.ValidationError("Este usuario ya es colaborador en el proyecto. Puedes cambiar su rol en la tabla.")
+                
         return user
 

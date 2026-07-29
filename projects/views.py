@@ -181,7 +181,7 @@ def project_members_view(request, project_id):
         if role != 'admin':
             return HttpResponseForbidden("Solo los administradores pueden gestionar miembros.")
             
-        form = ProjectMemberForm(request.POST)
+        form = ProjectMemberForm(request.POST, project=project)
         if form.is_valid():
             user = form.cleaned_data.get('username')
             role_assigned = form.cleaned_data.get('role')
@@ -192,7 +192,7 @@ def project_members_view(request, project_id):
             )
             return redirect('project_members', project_id=project.id)
     else:
-        form = ProjectMemberForm()
+        form = ProjectMemberForm(project=project)
 
     return render(request, 'projects/project_members.html', {
         'project': project,
@@ -261,8 +261,9 @@ def update_task_column_api(request):
             project = task.column.project
             role = get_user_role(project, request.user)
 
-            # Seguridad: Solo los roles 'admin' y 'manager' pueden cambiar tareas de columna con Drag & Drop
-            if role not in ['admin', 'manager']:
+            # Seguridad: Solo admin, manager y desarrollador asignado pueden cambiar tareas de columna con Drag & Drop
+            is_developer_assigned = (role == 'developer' and request.user in task.assigned_to.all())
+            if role not in ['admin', 'manager'] and not is_developer_assigned:
                 return JsonResponse({'status': 'error', 'message': 'No tienes permisos para arrastrar tareas.'}, status=403)
 
             # Obtenemos la columna destino del mismo proyecto y reasignamos la tarea

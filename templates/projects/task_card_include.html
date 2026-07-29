@@ -1,7 +1,7 @@
 <div class="task-card" 
-     draggable="{% if role == 'admin' or role == 'manager' %}true{% else %}false{% endif %}" 
+     draggable="{% if role == 'admin' or role == 'manager' or role == 'developer' and user in task.assigned_to.all %}true{% else %}false{% endif %}" 
      data-task-id="{{ task.id }}"
-     style="cursor: {% if role == 'admin' or role == 'manager' %}grab{% else %}default{% endif %};">
+     style="cursor: {% if role == 'admin' or role == 'manager' or role == 'developer' and user in task.assigned_to.all %}grab{% else %}default{% endif %};">
     
     <div class="task-card-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
         <span class="task-card-title" style="color: var(--text-main); font-weight: 600; font-size: 0.95rem; line-height: 1.4;">{{ task.title }}</span>
