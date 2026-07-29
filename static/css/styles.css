@@ -523,6 +523,101 @@ select.form-control option {
 }
 
 @media (max-width: 768px) {
+    /* Prevención global de desbordamiento horizontal en móvil */
+    html, body {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+
+    /* Reorganización del Header de Navegación (Navbar) en móvil: 1. Titulo, 2. Mis Proyectos, 3. Usuario + Salir */
+    .navbar {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        padding: 0.85rem 1rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .navbar-center {
+        order: 1 !important;
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    .navbar-left {
+        order: 2 !important;
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    .navbar-right {
+        order: 3 !important;
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    .navbar-nav {
+        justify-content: center !important;
+        gap: 0.75rem !important;
+    }
+
+    .main-container {
+        padding: 1.25rem 0.85rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Header del tablero Kanban en móvil */
+    .kanban-board-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+        width: 100% !important;
+    }
+    .kanban-board-header h2 {
+        flex-wrap: wrap !important;
+        font-size: 1.4rem !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Botones de Acción del Proyecto en Móvil: Miembros arriba, Añadir Tarea debajo */
+    .project-action-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 0.5rem !important;
+    }
+    .project-action-buttons .btn {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    /* Tarjeta de Avance del Proyecto encuadrada de lado a lado */
+    .project-summary-grid {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        width: 100% !important;
+    }
+    .project-progress-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 1.25rem 1rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+    }
+    .project-progress-card .progress-info-text {
+        text-align: center !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .project-progress-card .progress-chart-wrapper {
+        width: 110px !important;
+        height: 110px !important;
+        margin: 0.75rem auto 0 auto !important;
+    }
+
     /* Mostrar pestañas de columnas en móvil */
     .mobile-kanban-tabs {
         display: flex;

@@ -25,7 +25,7 @@
                 <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0;">{{ project.description|default:"Sin descripción" }}</p>
             </div>
 
-            <div style="display: flex; gap: 0.75rem; flex-shrink: 0;">
+            <div class="project-action-buttons" style="display: flex; gap: 0.75rem; flex-shrink: 0;">
                 <a href="{% url 'project_members' project.id %}" class="btn btn-secondary">👥 Miembros</a>
                 {% if role == 'admin' or role == 'manager' %}
                     <a href="{% url 'task_create' project.id %}" class="btn btn-primary">➕ Añadir Tarea</a>
@@ -34,12 +34,12 @@
         </div>
 
         <!-- Gráfico de Avance -->
-        <div class="form-card" style="margin: 0; max-width: none; display: flex; align-items: center; justify-content: space-around; padding: 1.5rem 2rem; flex: 1;">
-            <div style="text-align: left;">
+        <div class="form-card project-progress-card" style="margin: 0; max-width: none; display: flex; align-items: center; justify-content: space-around; padding: 1.5rem 2rem; flex: 1;">
+            <div style="text-align: left;" class="progress-info-text">
                 <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Avance del Proyecto</h3>
                 <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0;">Visualización del progreso general de las tareas</p>
             </div>
-            <div style="width: 150px; height: 150px; position: relative;">
+            <div class="progress-chart-wrapper" style="width: 150px; height: 150px; position: relative;">
                 <canvas id="progressChart"></canvas>
             </div>
         </div>
