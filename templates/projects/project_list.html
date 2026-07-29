@@ -19,9 +19,11 @@
             </div>
         </a>
     {% empty %}
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: rgba(255, 255, 255, 0.75);">
-            <p style="font-size: 1.1rem; margin-bottom: 1rem;">No estás asignado a ningún proyecto todavía.</p>
-            <a href="{% url 'project_create' %}" class="btn btn-primary">Crear tu primer proyecto</a>
+        <div class="empty-projects-card" style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 2rem; background: #ffffff; border-radius: 16px; border: 1px solid rgba(0, 0, 0, 0.06); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); max-width: 520px; margin: 1.5rem auto;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📁</div>
+            <h3 style="color: var(--text-main); font-weight: 700; font-size: 1.25rem; margin-bottom: 0.5rem;">No estás asignado a ningún proyecto todavía</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.75rem; line-height: 1.5;">Crea un nuevo proyecto para comenzar a organizar tus tareas y colaborar con tu equipo.</p>
+            <a href="{% url 'project_create' %}" class="btn btn-primary" style="padding: 0.7rem 1.4rem; font-size: 0.95rem;">➕ Crear tu primer proyecto</a>
         </div>
     {% endfor %}
 </div>
