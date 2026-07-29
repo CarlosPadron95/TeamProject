@@ -59,8 +59,6 @@ def project_list_view(request):
 # Vista para crear un proyecto nuevo y configurar automáticamente el equipo y tablero inicial.
 @login_required
 def project_create_view(request):
-    # Obtenemos los usuarios del sistema excluyendo al creador actual
-    available_users = User.objects.exclude(id=request.user.id)
     role_choices = ProjectMember.ROLE_CHOICES
 
     if request.method == 'POST':
@@ -75,22 +73,23 @@ def project_create_view(request):
             # 1. Asignamos al creador como miembro Administrador (rol principal)
             ProjectMember.objects.create(project=project, user=request.user, role='admin')
             
-            # 2. Asignamos los colaboradores iniciales seleccionados (si se marcó alguno)
-            selected_user_ids = request.POST.getlist('initial_members')
-            for user_id in selected_user_ids:
-                try:
-                    user_to_add = User.objects.get(id=user_id)
-                    if user_to_add != request.user:
-                        assigned_role = request.POST.get(f'role_{user_id}', 'developer')
-                        if assigned_role not in [r[0] for r in role_choices]:
-                            assigned_role = 'developer'
+            # 2. Asignamos los colaboradores iniciales agregados dinámicamente desde el buscador
+            member_usernames = request.POST.getlist('member_usernames')
+            member_roles = request.POST.getlist('member_roles')
+            
+            for username, role in zip(member_usernames, member_roles):
+                clean_username = username.strip()
+                if clean_username and clean_username.lower() != request.user.username.lower():
+                    try:
+                        invited_user = User.objects.get(username__iexact=clean_username)
+                        valid_role = role if role in [r[0] for r in role_choices] else 'developer'
                         ProjectMember.objects.get_or_create(
                             project=project,
-                            user=user_to_add,
-                            defaults={'role': assigned_role}
+                            user=invited_user,
+                            defaults={'role': valid_role}
                         )
-                except User.DoesNotExist:
-                    continue
+                    except User.DoesNotExist:
+                        continue
             
             # 3. Creamos las 3 columnas obligatorias por defecto de nuestro tablero Kanban
             Column.objects.create(project=project, name='Por Hacer', position=1)
@@ -101,11 +100,12 @@ def project_create_view(request):
             return redirect('project_detail', project_id=project.id)
     else:
         form = ProjectForm()
+
     return render(request, 'projects/project_form.html', {
         'form': form,
         'title': 'Nuevo Proyecto',
-        'available_users': available_users,
         'role_choices': role_choices,
+        'current_username': request.user.username,
     })
 
 
