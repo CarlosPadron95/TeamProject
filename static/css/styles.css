@@ -591,6 +591,25 @@ select.form-control option {
         overflow-x: hidden !important;
     }
 
+    /* Vista de Miembros en Móvil sin overflow */
+    .members-management-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+    }
+
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+
+    .table-responsive table {
+        min-width: 460px;
+    }
+
     /* Header del tablero Kanban en móvil */
     .kanban-board-header {
         flex-direction: column !important;
