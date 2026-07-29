@@ -217,6 +217,8 @@ body {
 
 .form-group {
     margin-bottom: 1.2rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .form-group label {
@@ -227,8 +229,22 @@ body {
     color: var(--text-main);
 }
 
+/* --- VISTA DE GESTIÓN DE MIEMBROS --- */
+.members-management-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    width: 100%;
+}
+
+.members-management-grid.single-column {
+    grid-template-columns: 1fr;
+}
+
 .form-control {
     width: 100%;
+    box-sizing: border-box;
     padding: 0.75rem 1rem;
     background: #ffffff;
     border: 1px solid #d1d5db;
@@ -593,21 +609,42 @@ select.form-control option {
 
     /* Vista de Miembros en Móvil sin overflow */
     .members-management-grid {
+        display: flex !important;
+        flex-direction: column !important;
         grid-template-columns: 1fr !important;
-        gap: 1.5rem !important;
+        gap: 1.25rem !important;
         width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .members-management-grid .form-card {
+        padding: 1.25rem 1rem !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    .members-management-grid form,
+    .members-management-grid .form-group,
+    .members-management-grid .form-control {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .table-responsive {
         width: 100% !important;
+        max-width: 100% !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch;
         margin-bottom: 1rem;
         border-radius: 8px;
+        box-sizing: border-box !important;
     }
 
     .table-responsive table {
-        min-width: 460px;
+        min-width: 440px;
     }
 
     /* Header del tablero Kanban en móvil */

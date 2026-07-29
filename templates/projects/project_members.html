@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="members-management-grid" style="display: grid; {% if role == 'admin' %}grid-template-columns: 2fr 1fr;{% else %}grid-template-columns: 1fr;{% endif %} gap: 2rem; align-items: start;">
+<div class="members-management-grid {% if role != 'admin' %}single-column{% endif %}">
     <!-- Lista de Miembros -->
     <div class="form-card" style="margin: 0; max-width: none;">
         <h2 class="form-title" style="margin-bottom: 1.5rem; color: var(--text-main);">👥 Miembros del Proyecto</h2>
