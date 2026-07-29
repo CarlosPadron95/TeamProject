@@ -30,14 +30,14 @@ Aplicación web Full-Stack para la gestión colaborativa de proyectos con un tab
 Esta aplicación permite:
 - **Organizar** proyectos colaborativos asignando tareas con nivel de prioridad (Baja, Media, Alta), fechas límite y múltiples colaboradores simultáneos.
 - **Gestionar Permisos de Roles**: Roles integrados (Administrador, Gestor, Desarrollador y Observador) que condicionan dinámicamente lo que el usuario puede ver y editar en la interfaz.
-- **Interactuar con el Kanban**: Desplazar tareas entre las columnas fijas (*Por Hacer*, *En Progreso*, *Completado*) mediante arrastrar y soltar (Drag & Drop) restringido únicamente para los roles con permisos de edición (Admin y Manager).
+- **Interactuar con el Kanban**: Desplazar tareas entre las columnas fijas (*Por Hacer*, *En Progreso*, *Completado*) mediante arrastrar y soltar (Drag & Drop) habilitado para Administradores, Gestores y Desarrolladores asignados a la tarea.
 - **Visualizar Estadísticas**: Gráfico de avance tipo dona (Chart.js) que mapea en colores semánticos (Rojo: Por Hacer, Amarillo: En Progreso, Verde: Completado) el progreso del proyecto en tiempo real.
-- **Comunicarse en Equipo**: Muro interno de mensajes/chat rápido en cada proyecto.
+- **Comunicarse en Equipo**: Muro interno de mensajes/chat rápido en cada proyecto con soporte de overlay responsivo.
 - **Administrar Miembros**: Panel interactivo donde el Administrador del proyecto puede invitar nuevos colaboradores, removerlos o actualizar sus roles en vivo.
 
 ### ✨ Características
-1. **Interfaz Premium Light Mode**: Estética moderna tipo SaaS, limpia, con degradados sutiles, sombras definidas y textos centrados en la cabecera.
-2. **Seguridad y Roles**: Control de accesos tanto en el Frontend (interacciones de arrastre deshabilitadas o campos del formulario de tareas bloqueados para desarrolladores) como a nivel de Backend.
+1. **Interfaz Premium Light Mode**: Estética moderna tipo SaaS, limpia, con degradados sutiles, sombras definidas y navegación móvil optimizada por pestañas.
+2. **Seguridad y Roles**: Control de accesos tanto en el Frontend (interacciones de arrastre restringidas por rol/asignación y campos protegidos) como validación estricta a nivel de Backend.
 3. **Persistencia y Modularidad**: Base de datos relacional para persistir tareas, membresías, mensajes y orden del tablero.
 
 ### 🎯 Casos de Uso
@@ -57,14 +57,14 @@ Full-Stack web application for collaborative project management featuring a dyna
 This application allows users to:
 - **Organize** collaborative projects by assigning tasks with priority levels (Low, Medium, High), due dates, and multiple simultaneous assignees.
 - **Manage Role-Based Permissions**: Built-in roles (Administrator, Manager, Developer, and Viewer) that dynamically control what each user can see and edit.
-- **Interact with Kanban**: Move tasks between fixed columns (*To Do*, *In Progress*, *Completed*) via drag and drop (Drag & Drop) restricted only to authorized roles (Admin & Manager).
+- **Interact with Kanban**: Move tasks between fixed columns (*To Do*, *In Progress*, *Completed*) via drag and drop (Drag & Drop) enabled for Admins, Managers, and Developers assigned to the task.
 - **Visualize Progress**: A doughnut chart (Chart.js) mapping project progress in real-time using semantic colors (Red: To Do, Yellow: In Progress, Green: Completed).
-- **Communicate in Real-Time**: Project discussion board/internal chat for team coordination.
+- **Communicate in Real-Time**: Project discussion board/internal chat with overlay support on mobile screens.
 - **Manage Members**: An interactive dashboard where the Project Administrator can invite new members, remove them, or update roles on the fly.
 
 ### ✨ Features
-1. **Premium Light Mode Interface**: Modern SaaS dashboard aesthetics, clean layouts, subtle gradients, drop-shadows, and centered navbar branding.
-2. **Security & Role Constraints**: Access controls enforced both in the Frontend (disabled dragging interactions and locked task fields for assigned developers) and verified on the Backend.
+1. **Premium Light Mode Interface**: Modern SaaS dashboard aesthetics, clean layouts, subtle gradients, drop-shadows, centered navbar branding, and mobile tabbed navigation.
+2. **Security & Role Constraints**: Access controls enforced both in the Frontend (drag-and-drop interactions scoped by role/assigned task) and verified on the Backend.
 3. **Data Integrity**: Relational database schema to persist tasks, project memberships, board states, and internal discussions.
 
 ### 🎯 Use Cases
