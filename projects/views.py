@@ -1,6 +1,7 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, JsonResponse
 from django.db.models import Q
@@ -58,6 +59,10 @@ def project_list_view(request):
 # Vista para crear un proyecto nuevo y configurar automáticamente el equipo y tablero inicial.
 @login_required
 def project_create_view(request):
+    # Obtenemos los usuarios del sistema excluyendo al creador actual
+    available_users = User.objects.exclude(id=request.user.id)
+    role_choices = ProjectMember.ROLE_CHOICES
+
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
@@ -70,7 +75,24 @@ def project_create_view(request):
             # 1. Asignamos al creador como miembro Administrador (rol principal)
             ProjectMember.objects.create(project=project, user=request.user, role='admin')
             
-            # 2. Creamos las 3 columnas obligatorias por defecto de nuestro tablero Kanban
+            # 2. Asignamos los colaboradores iniciales seleccionados (si se marcó alguno)
+            selected_user_ids = request.POST.getlist('initial_members')
+            for user_id in selected_user_ids:
+                try:
+                    user_to_add = User.objects.get(id=user_id)
+                    if user_to_add != request.user:
+                        assigned_role = request.POST.get(f'role_{user_id}', 'developer')
+                        if assigned_role not in [r[0] for r in role_choices]:
+                            assigned_role = 'developer'
+                        ProjectMember.objects.get_or_create(
+                            project=project,
+                            user=user_to_add,
+                            defaults={'role': assigned_role}
+                        )
+                except User.DoesNotExist:
+                    continue
+            
+            # 3. Creamos las 3 columnas obligatorias por defecto de nuestro tablero Kanban
             Column.objects.create(project=project, name='Por Hacer', position=1)
             Column.objects.create(project=project, name='En Progreso', position=2)
             Column.objects.create(project=project, name='Completado', position=3)
@@ -79,7 +101,12 @@ def project_create_view(request):
             return redirect('project_detail', project_id=project.id)
     else:
         form = ProjectForm()
-    return render(request, 'projects/project_form.html', {'form': form, 'title': 'Nuevo Proyecto'})
+    return render(request, 'projects/project_form.html', {
+        'form': form,
+        'title': 'Nuevo Proyecto',
+        'available_users': available_users,
+        'role_choices': role_choices,
+    })
 
 
 # --- 4. DETALLE DE PROYECTO (TABLERO KANBAN Y CHAT) ---
