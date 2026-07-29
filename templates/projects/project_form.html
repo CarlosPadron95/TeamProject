@@ -68,6 +68,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const membersContainer = document.getElementById('added-members-container');
     const currentUsername = "{{ current_username|escapejs }}".toLowerCase();
 
+    // Cargar mapa de usuarios registrados existentes en el sistema
+    const validUsernamesMap = new Map();
+    try {
+        const existingUsernames = JSON.parse('{{ existing_usernames_json|escapejs }}');
+        existingUsernames.forEach(u => validUsernamesMap.set(u.toLowerCase(), u));
+    } catch(e) {
+        console.error("Error cargando usuarios:", e);
+    }
+
     const addedUsernames = new Set();
 
     function showError(msg) {
@@ -82,26 +91,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function addMember() {
         clearError();
-        const username = usernameInput.value.trim();
+        const rawUsername = usernameInput.value.trim();
         const role = roleInput.value;
         const roleText = roleInput.options[roleInput.selectedIndex].text;
 
-        if (!username) {
+        if (!rawUsername) {
             showError('Escribe un nombre de usuario.');
             return;
         }
 
-        if (username.toLowerCase() === currentUsername) {
+        const lowerUsername = rawUsername.toLowerCase();
+
+        if (lowerUsername === currentUsername) {
             showError('Ya eres el propietario y administrador del proyecto.');
             return;
         }
 
-        if (addedUsernames.has(username.toLowerCase())) {
-            showError('Este usuario ya fue añadido a la lista.');
+        if (!validUsernamesMap.has(lowerUsername)) {
+            showError(`El usuario "${rawUsername}" no existe en el sistema.`);
             return;
         }
 
-        addedUsernames.add(username.toLowerCase());
+        const canonicalUsername = validUsernamesMap.get(lowerUsername);
+
+        if (addedUsernames.has(lowerUsername)) {
+            showError(`El usuario "${canonicalUsername}" ya fue añadido a la lista.`);
+            return;
+        }
+
+        addedUsernames.add(lowerUsername);
 
         // Crear elemento chip dinámico
         const chip = document.createElement('div');
@@ -109,15 +127,15 @@ document.addEventListener('DOMContentLoaded', function() {
         chip.style.cssText = 'display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.08); padding: 0.4rem 0.75rem; border-radius: 20px; font-size: 0.85rem; color: var(--text-main); font-weight: 500;';
 
         chip.innerHTML = `
-            <span>👤 <strong>${username}</strong> (${roleText})</span>
-            <input type="hidden" name="member_usernames" value="${username}">
+            <span>👤 <strong>${canonicalUsername}</strong> (${roleText})</span>
+            <input type="hidden" name="member_usernames" value="${canonicalUsername}">
             <input type="hidden" name="member_roles" value="${role}">
             <button type="button" style="background: none; border: none; cursor: pointer; color: #eb5a46; font-size: 0.95rem; margin-left: 0.2rem; line-height: 1; padding: 0; font-weight: bold;" title="Quitar">✖</button>
         `;
 
         // Evento para remover el chip
         chip.querySelector('button').addEventListener('click', function() {
-            addedUsernames.delete(username.toLowerCase());
+            addedUsernames.delete(lowerUsername);
             chip.remove();
         });
 

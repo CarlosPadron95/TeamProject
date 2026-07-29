@@ -101,11 +101,14 @@ def project_create_view(request):
     else:
         form = ProjectForm()
 
+    existing_usernames = list(User.objects.exclude(id=request.user.id).values_list('username', flat=True))
+
     return render(request, 'projects/project_form.html', {
         'form': form,
         'title': 'Nuevo Proyecto',
         'role_choices': role_choices,
         'current_username': request.user.username,
+        'existing_usernames_json': json.dumps(existing_usernames),
     })
 
 
