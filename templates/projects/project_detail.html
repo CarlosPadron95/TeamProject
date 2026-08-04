@@ -45,12 +45,11 @@
         </div>
     </div>
 
-    <!-- Columna Derecha: Muro de Mensajes (Chat) -->
-    <!-- Estirado con height: 100% para ocupar toda la altura al nivel del nombre del proyecto en escritorio -->
+    <!-- Chat del Proyecto -->
     <div id="project-chat-container" class="form-card project-chat-card" style="margin: 0; max-width: none; display: flex; flex-direction: column; height: 100%; min-height: 0; padding: 1.25rem 1.5rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 0.5rem;">
-            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-main);">💬 Muro del Proyecto</h3>
-            <!-- Botón de cerrar chat, visible solo en overlay móvil -->
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-main);">💬 Chat</h3>
+            <!-- Botón para cerrar el chat cuando se abre como ventana en el móvil -->
             <button id="close-mobile-chat" class="close-chat-btn" style="display: none;">✕</button>
         </div>
         
@@ -80,9 +79,9 @@
     </div>
 </div>
 
-<!-- --- BOTÓN FLOTANTE PARA EL CHAT EN MÓVIL --- -->
+<!-- Botón flotante para abrir el chat en pantallas móviles -->
 <button id="mobile-chat-toggle" class="mobile-chat-badge">
-    💬 Muro del Proyecto
+    💬 Chat
 </button>
 
 <!-- --- SELECTOR DE COLUMNAS PARA DISPOSITIVOS MÓVILES --- -->

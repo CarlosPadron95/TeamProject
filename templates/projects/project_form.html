@@ -3,10 +3,7 @@
 
 {% block content %}
 <div class="form-card" style="max-width: 620px;">
-    <div style="display: flex; align-items: center; gap: 0.35rem; margin-bottom: 1.25rem;">
-        <img src="{% static 'img/logo.png' %}" alt="TeamProject Logo" style="width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(79, 70, 229, 0.22));">
-        <h2 class="form-title" style="margin: 0;">{{ title }}</h2>
-    </div>
+    <h2 class="form-title">{{ title }}</h2>
     <form method="post" id="project-form">
         {% csrf_token %}
         {% for field in form %}

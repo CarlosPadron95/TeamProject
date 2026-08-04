@@ -76,7 +76,7 @@ body {
     justify-content: flex-end;
 }
 
-/* Título de la marca en la cabecera con Isotipo */
+/* Marca y logotipo de la cabecera */
 .navbar-brand {
     display: flex;
     align-items: center;
@@ -525,7 +525,7 @@ select.form-control option {
     background: #94a3b8;
 }
 
-/* --- FOOTER --- */
+/* Pie de página con poca altura para que quede fino */
 .app-footer {
     text-align: center;
     padding: 0.5rem 1rem;
@@ -795,7 +795,7 @@ select.form-control option {
         transform: translateY(-2px);
     }
 
-    /* Muro del Proyecto como overlay a pantalla completa en móvil */
+    /* Chat como ventana flotante en móvil */
     .project-chat-card {
         display: none !important;
     }

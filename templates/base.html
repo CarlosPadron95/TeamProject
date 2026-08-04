@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TeamProject</title>
-    <!-- Favicon Personalizado -->
+    <!-- Favicon del navegador -->
     <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
     <link rel="apple-touch-icon" href="{% static 'img/favicon.png' %}">
     <!-- Google Fonts Inter -->
@@ -16,16 +16,14 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2.1">
 </head>
 <body>
-    <!-- --- NAVEGACIÓN --- -->
+    <!-- Barra de navegación principal -->
     <nav class="navbar">
-        <!-- Columna Izquierda: Mis Proyectos solo si no me encuentro en la página de Mis Proyectos -->
         <div class="navbar-left">
             {% if user.is_authenticated and request.resolver_match.url_name != 'project_list' %}
                 <a href="{% url 'project_list' %}" class="nav-link">Mis Proyectos</a>
             {% endif %}
         </div>
 
-        <!-- Columna Central: Marca Centrada -->
         <div class="navbar-center">
             <a href="{% url 'project_list' %}" class="navbar-brand">
                 <img src="{% static 'img/logo.png' %}" alt="TeamProject Logo" class="navbar-logo">
@@ -33,7 +31,6 @@
             </a>
         </div>
 
-        <!-- Columna Derecha: Menú de Navegación / Autenticación -->
         <div class="navbar-right">
             {% if user.is_authenticated %}
                 <ul class="navbar-nav">
@@ -49,12 +46,11 @@
         </div>
     </nav>
 
-    <!-- --- CONTENIDO PRINCIPAL --- -->
     <main class="main-container">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- --- FOOTER --- -->
+    <!-- Pie de página -->
     <footer class="app-footer">
         <div class="footer-content">
             <img src="{% static 'img/logo.png' %}" alt="TeamProject Logo" class="footer-logo">
