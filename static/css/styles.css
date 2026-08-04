@@ -76,9 +76,12 @@ body {
     justify-content: flex-end;
 }
 
-/* Título de la marca en la cabecera, con letra grande, negrita y sin icono */
+/* Título de la marca en la cabecera con Isotipo */
 .navbar-brand {
-    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 2.1rem;
     font-weight: 800;
     color: var(--primary-color);
     text-decoration: none;
@@ -86,8 +89,35 @@ body {
     transition: var(--transition);
 }
 
+.navbar-logo {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(79, 70, 229, 0.25));
+    transition: var(--transition);
+}
+
 .navbar-brand:hover {
     color: var(--primary-hover);
+}
+
+.navbar-brand:hover .navbar-logo {
+    transform: scale(1.08) rotate(-3deg);
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+}
+
+.footer-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    opacity: 0.95;
 }
 
 .navbar-nav {
@@ -498,7 +528,7 @@ select.form-control option {
 /* --- FOOTER --- */
 .app-footer {
     text-align: center;
-    padding: 2rem;
+    padding: 0.5rem 1rem;
     font-size: 0.82rem;
     color: var(--text-muted);
     border-top: 1px solid rgba(0, 0, 0, 0.05);

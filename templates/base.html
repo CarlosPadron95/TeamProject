@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TeamProject</title>
-    <!-- Favicon Libreta/Portapapeles -->
-    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+    <!-- Favicon Personalizado -->
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/favicon.png' %}">
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Estilos CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2.1">
 </head>
 <body>
     <!-- --- NAVEGACIÓN --- -->
@@ -27,7 +28,8 @@
         <!-- Columna Central: Marca Centrada -->
         <div class="navbar-center">
             <a href="{% url 'project_list' %}" class="navbar-brand">
-                TeamProject
+                <img src="{% static 'img/logo.png' %}" alt="TeamProject Logo" class="navbar-logo">
+                <span>TeamProject</span>
             </a>
         </div>
 
@@ -54,7 +56,10 @@
 
     <!-- --- FOOTER --- -->
     <footer class="app-footer">
-        Made by Carlos Padrón
+        <div class="footer-content">
+            <img src="{% static 'img/logo.png' %}" alt="TeamProject Logo" class="footer-logo">
+            <span><strong>TeamProject</strong> &copy; 2026 | Made by Carlos Padrón</span>
+        </div>
     </footer>
 
     <!-- Script de contraseña para toda la app -->

@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="form-card">
+    <div class="form-header-logo" style="text-align: center; margin-bottom: 0.2rem;">
+        <img src="{% static 'img/logo.png' %}" alt="TeamProject Logo" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(79, 70, 229, 0.28));">
+    </div>
     <h2 class="form-title" style="text-align: center;">Crear Cuenta</h2>
     <p class="form-subtitle" style="text-align: center;">Regístrate para comenzar</p>
 
