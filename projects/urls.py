@@ -7,11 +7,8 @@ urlpatterns = [
     # Registro de nuevos usuarios
     path('register/', views.register_view, name='register'),
     
-    # Login personalizado (inyecto el formulario estilizado CustomAuthenticationForm)
-    path('login/', auth_views.LoginView.as_view(
-        template_name='auth/login.html',
-        authentication_form=forms.CustomAuthenticationForm
-    ), name='login'),
+    # Login personalizado con gestión de Recuérdame
+    path('login/', views.login_view, name='login'),
     
     # Cierre de sesión de la app
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),

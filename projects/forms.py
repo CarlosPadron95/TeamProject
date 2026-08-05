@@ -7,12 +7,19 @@ from .models import Project, ProjectMember, Task, ProjectMessage, Column
 # --- 1. FORMULARIO DE INICIO DE SESIÓN ---
 # Se encarga de capturar el nombre de usuario y contraseña para entrar a la app.
 class CustomAuthenticationForm(AuthenticationForm):
+    remember_me = forms.BooleanField(
+        required=False,
+        initial=False,
+        label="Recuérdame",
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Recorro todos los campos y les agrego la clase de CSS 'form-control'
-        # para que se vean redondeados, con bordes suaves y elegantes.
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'form-control'})
+        # Recorro los campos y agrego 'form-control' a los campos de texto
+        for name, field in self.fields.items():
+            if name != 'remember_me':
+                field.widget.attrs.update({'class': 'form-control'})
 
 
 # --- 2. FORMULARIO DE REGISTRO DE USUARIOS ---
@@ -34,6 +41,13 @@ class CustomUserCreationForm(UserCreationForm):
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
             field.help_text = None
+
+    # Valido que el nombre de usuario tenga al menos 3 caracteres
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if username and len(username) < 3:
+            raise forms.ValidationError("El nombre de usuario debe tener al menos 3 caracteres.")
+        return username
 
     # Validación personalizada para que las contraseñas sean seguras y cumplan requisitos
     def clean_password1(self):

@@ -6,8 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, JsonResponse
 from django.db.models import Q
 
+from django.contrib import messages
 from .models import Project, Column, ProjectMember, Task, ProjectMessage
-from .forms import CustomUserCreationForm, ProjectForm, TaskForm, ProjectMemberForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProjectForm, TaskForm, ProjectMemberForm
 
 # --- FUNCIÓN AUXILIAR PARA OBTENER EL ROL ---
 # Esta función ayuda a saber qué rol tiene un usuario en un proyecto específico.
@@ -25,23 +26,48 @@ def get_user_role(project, user):
 
 
 # --- 1. REGISTRO DE USUARIOS ---
-# Vista para crear una cuenta nueva. Si el usuario ya inició sesión, lo redirijo al listado.
+# Vista para crear una cuenta nueva. Al completar el registro, redirijo al login con mensaje verde de éxito.
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('project_list')
         
     if request.method == 'POST':
-        # Proceso los datos enviados por el usuario
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            # Guardo el nuevo usuario e inicio sesión automáticamente
-            user = form.save()
-            login(request, user)
-            return redirect('project_list')
+            form.save()
+            messages.success(request, '¡Te has registrado correctamente! Por favor, inicia sesión con tus datos.')
+            return redirect('login')
     else:
-        # Muestro el formulario vacío
         form = CustomUserCreationForm()
     return render(request, 'auth/register.html', {'form': form})
+
+
+# --- 1B. INICIO DE SESIÓN (LOGIN CON RECUÉRDAME) ---
+# Vista personalizada para el inicio de sesión que gestiona la extensión de sesión ("Recuérdame").
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('project_list')
+
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+
+            # Compruebo si el usuario marcó la casilla "Recuérdame"
+            remember_me = form.cleaned_data.get('remember_me')
+            if remember_me:
+                # Extiendo la sesión a 2 semanas (1209600 segundos)
+                request.session.set_expiry(1209600)
+            else:
+                # La sesión expira al cerrar el navegador
+                request.session.set_expiry(0)
+
+            return redirect('project_list')
+    else:
+        form = CustomAuthenticationForm()
+
+    return render(request, 'auth/login.html', {'form': form})
 
 
 # --- 2. LISTADO DE PROYECTOS (DASHBOARD GENERAL) ---
