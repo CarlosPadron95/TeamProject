@@ -1,161 +1,254 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="form-card" style="max-width: 620px">
+  <h2 class="form-title">{{ title }}</h2>
+  <form method="post" id="project-form">
+    {% csrf_token %} {% for field in form %}
+    <div class="form-group">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }} {% if field.errors %}
+      <small
+        style="
+          color: #ff8b8b;
+          display: block;
+          margin-top: 0.35rem;
+          font-weight: 600;
+        "
+        >{{ field.errors.0 }}</small
+      >
+      {% endif %}
+    </div>
+    {% endfor %} {% if not project %}
+    <!-- Sección Dinámica para Añadir Colaboradores Iniciales -->
+    <div
+      class="form-group"
+      style="
+        margin-top: 1.75rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+      "
+    >
+      <label
+        style="
+          font-weight: 700;
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          color: var(--text-main);
+        "
+      >
+        <span>👥 Añadir Colaboradores Iniciales</span>
+        <span
+          style="
+            font-weight: 400;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.04);
+            padding: 0.2rem 0.55rem;
+            border-radius: 12px;
+          "
+          >Opcional</span
+        >
+      </label>
+      <p
+        style="
+          font-size: 0.85rem;
+          color: var(--text-secondary);
+          margin-bottom: 0.85rem;
+          line-height: 1.4;
+        "
+      >
+        Escribe el nombre de usuario de tus colaboradores para agregarlos al
+        proyecto desde el inicio:
+      </p>
 
-{% block content %}
-<div class="form-card" style="max-width: 620px;">
-    <h2 class="form-title">{{ title }}</h2>
-    <form method="post" id="project-form">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <small style="color: #ff8b8b; display: block; margin-top: 0.35rem; font-weight: 600;">{{ field.errors.0 }}</small>
-                {% endif %}
-            </div>
-        {% endfor %}
+      <!-- Input + Select de Rol + Botón Añadir -->
+      <div
+        style="
+          display: flex;
+          gap: 0.5rem;
+          align-items: center;
+          margin-bottom: 0.5rem;
+          flex-wrap: wrap;
+        "
+      >
+        <input
+          type="text"
+          id="member-username-input"
+          class="form-control"
+          style="flex: 2; min-width: 160px"
+          placeholder="Ej. John_Doe"
+        />
 
-        {% if not project %}
-            <!-- Sección Dinámica para Añadir Colaboradores Iniciales -->
-            <div class="form-group" style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid rgba(0,0,0,0.08);">
-                <label style="font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main);">
-                    <span>👥 Añadir Colaboradores Iniciales</span>
-                    <span style="font-weight: 400; font-size: 0.8rem; color: var(--text-secondary); background: rgba(0,0,0,0.04); padding: 0.2rem 0.55rem; border-radius: 12px;">Opcional</span>
-                </label>
-                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.85rem; line-height: 1.4;">
-                    Escribe el nombre de usuario de tus colaboradores para agregarlos al proyecto desde el inicio:
-                </p>
+        <select
+          id="member-role-input"
+          class="form-control"
+          style="flex: 1.2; min-width: 140px"
+        >
+          {% for role_code, role_name in role_choices %}
+          <option
+            value="{{ role_code }}"
+            {%
+            if
+            role_code=""
+            ="developer"
+            %}selected{%
+            endif
+            %}
+          >
+            {{ role_name }}
+          </option>
+          {% endfor %}
+        </select>
 
-                <!-- Input + Select de Rol + Botón Añadir -->
-                <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
-                    <input type="text" id="member-username-input" class="form-control" style="flex: 2; min-width: 160px;" placeholder="Ej. Débora_Melano">
-                    
-                    <select id="member-role-input" class="form-control" style="flex: 1.2; min-width: 140px;">
-                        {% for role_code, role_name in role_choices %}
-                            <option value="{{ role_code }}" {% if role_code == 'developer' %}selected{% endif %}>{{ role_name }}</option>
-                        {% endfor %}
-                    </select>
-                    
-                    <button type="button" id="add-member-btn" class="btn btn-secondary" style="padding: 0.55rem 1rem; white-space: nowrap;">➕ Añadir</button>
-                </div>
-                <small id="member-error-msg" style="color: #eb5a46; display: none; font-weight: 600; margin-bottom: 0.5rem;"></small>
+        <button
+          type="button"
+          id="add-member-btn"
+          class="btn btn-secondary"
+          style="padding: 0.55rem 1rem; white-space: nowrap"
+        >
+          ➕ Añadir
+        </button>
+      </div>
+      <small
+        id="member-error-msg"
+        style="
+          color: #eb5a46;
+          display: none;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+        "
+      ></small>
 
-                <!-- Lista Dinámica de Miembros Agregados -->
-                <div id="added-members-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;">
-                    <!-- Se llenará dinámicamente mediante JavaScript -->
-                </div>
-            </div>
-        {% endif %}
+      <!-- Lista Dinámica de Miembros Agregados -->
+      <div
+        id="added-members-container"
+        style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem"
+      >
+        <!-- Se llenará dinámicamente mediante JavaScript -->
+      </div>
+    </div>
+    {% endif %}
 
-        <div style="display: flex; gap: 0.5rem; margin-top: 1.75rem;">
-            <button type="submit" class="btn btn-primary" style="flex: 1;">Guardar Proyecto</button>
-            {% if project %}
-                <a href="{% url 'project_detail' project.id %}" class="btn btn-cancel">Cancelar</a>
-            {% else %}
-                <a href="{% url 'project_list' %}" class="btn btn-cancel">Cancelar</a>
-            {% endif %}
-        </div>
-    </form>
+    <div style="display: flex; gap: 0.5rem; margin-top: 1.75rem">
+      <button type="submit" class="btn btn-primary" style="flex: 1">
+        Guardar Proyecto
+      </button>
+      {% if project %}
+      <a href="{% url 'project_detail' project.id %}" class="btn btn-cancel"
+        >Cancelar</a
+      >
+      {% else %}
+      <a href="{% url 'project_list' %}" class="btn btn-cancel">Cancelar</a>
+      {% endif %}
+    </div>
+  </form>
 </div>
 
 {% if not project %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const usernameInput = document.getElementById('member-username-input');
-    const roleInput = document.getElementById('member-role-input');
-    const addBtn = document.getElementById('add-member-btn');
-    const errorMsg = document.getElementById('member-error-msg');
-    const membersContainer = document.getElementById('added-members-container');
+  document.addEventListener("DOMContentLoaded", function () {
+    const usernameInput = document.getElementById("member-username-input");
+    const roleInput = document.getElementById("member-role-input");
+    const addBtn = document.getElementById("add-member-btn");
+    const errorMsg = document.getElementById("member-error-msg");
+    const membersContainer = document.getElementById("added-members-container");
     const currentUsername = "{{ current_username|escapejs }}".toLowerCase();
 
     // Cargar mapa de usuarios registrados existentes en el sistema
     const validUsernamesMap = new Map();
     try {
-        const existingUsernames = JSON.parse('{{ existing_usernames_json|escapejs }}');
-        existingUsernames.forEach(u => validUsernamesMap.set(u.toLowerCase(), u));
-    } catch(e) {
-        console.error("Error cargando usuarios:", e);
+      const existingUsernames = JSON.parse(
+        "{{ existing_usernames_json|escapejs }}",
+      );
+      existingUsernames.forEach((u) =>
+        validUsernamesMap.set(u.toLowerCase(), u),
+      );
+    } catch (e) {
+      console.error("Error cargando usuarios:", e);
     }
 
     const addedUsernames = new Set();
 
     function showError(msg) {
-        errorMsg.textContent = msg;
-        errorMsg.style.display = 'block';
+      errorMsg.textContent = msg;
+      errorMsg.style.display = "block";
     }
 
     function clearError() {
-        errorMsg.textContent = '';
-        errorMsg.style.display = 'none';
+      errorMsg.textContent = "";
+      errorMsg.style.display = "none";
     }
 
     function addMember() {
-        clearError();
-        const rawUsername = usernameInput.value.trim();
-        const role = roleInput.value;
-        const roleText = roleInput.options[roleInput.selectedIndex].text;
+      clearError();
+      const rawUsername = usernameInput.value.trim();
+      const role = roleInput.value;
+      const roleText = roleInput.options[roleInput.selectedIndex].text;
 
-        if (!rawUsername) {
-            showError('Escribe un nombre de usuario.');
-            return;
-        }
+      if (!rawUsername) {
+        showError("Escribe un nombre de usuario.");
+        return;
+      }
 
-        const lowerUsername = rawUsername.toLowerCase();
+      const lowerUsername = rawUsername.toLowerCase();
 
-        if (lowerUsername === currentUsername) {
-            showError('Ya eres el propietario y administrador del proyecto.');
-            return;
-        }
+      if (lowerUsername === currentUsername) {
+        showError("Ya eres el propietario y administrador del proyecto.");
+        return;
+      }
 
-        if (!validUsernamesMap.has(lowerUsername)) {
-            showError(`El usuario "${rawUsername}" no existe en el sistema.`);
-            return;
-        }
+      if (!validUsernamesMap.has(lowerUsername)) {
+        showError(`El usuario "${rawUsername}" no existe en el sistema.`);
+        return;
+      }
 
-        const canonicalUsername = validUsernamesMap.get(lowerUsername);
+      const canonicalUsername = validUsernamesMap.get(lowerUsername);
 
-        if (addedUsernames.has(lowerUsername)) {
-            showError(`El usuario "${canonicalUsername}" ya fue añadido a la lista.`);
-            return;
-        }
+      if (addedUsernames.has(lowerUsername)) {
+        showError(
+          `El usuario "${canonicalUsername}" ya fue añadido a la lista.`,
+        );
+        return;
+      }
 
-        addedUsernames.add(lowerUsername);
+      addedUsernames.add(lowerUsername);
 
-        // Crear elemento chip dinámico
-        const chip = document.createElement('div');
-        chip.className = 'member-chip';
-        chip.style.cssText = 'display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.08); padding: 0.4rem 0.75rem; border-radius: 20px; font-size: 0.85rem; color: var(--text-main); font-weight: 500;';
+      // Crear elemento chip dinámico
+      const chip = document.createElement("div");
+      chip.className = "member-chip";
+      chip.style.cssText =
+        "display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.08); padding: 0.4rem 0.75rem; border-radius: 20px; font-size: 0.85rem; color: var(--text-main); font-weight: 500;";
 
-        chip.innerHTML = `
+      chip.innerHTML = `
             <span>👤 <strong>${canonicalUsername}</strong> (${roleText})</span>
             <input type="hidden" name="member_usernames" value="${canonicalUsername}">
             <input type="hidden" name="member_roles" value="${role}">
             <button type="button" style="background: none; border: none; cursor: pointer; color: #eb5a46; font-size: 0.95rem; margin-left: 0.2rem; line-height: 1; padding: 0; font-weight: bold;" title="Quitar">✖</button>
         `;
 
-        // Evento para remover el chip
-        chip.querySelector('button').addEventListener('click', function() {
-            addedUsernames.delete(lowerUsername);
-            chip.remove();
-        });
+      // Evento para remover el chip
+      chip.querySelector("button").addEventListener("click", function () {
+        addedUsernames.delete(lowerUsername);
+        chip.remove();
+      });
 
-        membersContainer.appendChild(chip);
+      membersContainer.appendChild(chip);
 
-        // Limpiar input y mantener el foco
-        usernameInput.value = '';
-        usernameInput.focus();
+      // Limpiar input y mantener el foco
+      usernameInput.value = "";
+      usernameInput.focus();
     }
 
-    addBtn.addEventListener('click', addMember);
+    addBtn.addEventListener("click", addMember);
 
-    usernameInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addMember();
-        }
+    usernameInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addMember();
+      }
     });
-});
+  });
 </script>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}
