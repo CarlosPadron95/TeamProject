@@ -115,7 +115,7 @@ class TaskForm(forms.ModelForm):
 class ProjectMemberForm(forms.ModelForm):
     username = forms.CharField(
         label="Nombre de Usuario",
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Débora_Melano'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. John_Doe'})
     )
 
     class Meta:
